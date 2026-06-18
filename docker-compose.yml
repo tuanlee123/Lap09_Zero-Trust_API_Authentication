@@ -1,15 +1,29 @@
-version: '3.8'
 services:
-  # 1. Backend giả lập (để test)
+  # 1. Backend service
   backend:
     image: nginxdemos/hello
-    ports:
-      - "8081:80"
+    networks:
+      - envoy_network
 
-  # 2. Envoy Proxy (Cổng vào)
+  # 2. Envoy Proxy
   envoy:
     image: envoyproxy/envoy:v1.28-latest
     ports:
       - "8080:8080"
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - envoy_network
+    depends_on:
+      - authz-service
+
+  # 3. Service Authz (của Người B)
+  authz-service:
+    build: ./authz
+    networks:
+      - envoy_network
+
+# ĐỊNH NGHĨA NETWORK CHUNG
+networks:
+  envoy_network:
+    driver: bridge

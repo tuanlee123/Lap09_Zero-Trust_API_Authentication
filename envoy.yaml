@@ -18,23 +18,20 @@ static_resources:
               - match: { prefix: "/" }
                 route: { cluster: backend_cluster }
           http_filters:
-          # Thêm bộ lọc xác thực vào đây
           - name: envoy.filters.http.ext_authz
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+              transport_api_version: V3
               http_service:
                 server_uri:
                   uri: http://authz-service:5000
                   cluster: authz_cluster
                   timeout: 0.5s
-                path_prefix: "/"
-          # Bộ lọc router phải luôn nằm cuối cùng
           - name: envoy.filters.http.router
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-  # Thêm cluster cho dịch vụ xác thực
   - name: authz_cluster
     connect_timeout: 0.25s
     type: STRICT_DNS

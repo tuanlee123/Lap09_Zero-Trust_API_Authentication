@@ -1,20 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, Response
 
 app = Flask(__name__)
 
-@app.route("/check", methods=["POST"])
+# Thêm route "/" để xử lý request mà Envoy đang gửi tới
+@app.route("/", methods=["GET", "POST"])
+@app.route("/check", methods=["GET", "POST"])
 def check():
-    # 1. In log để xem Envoy đang gửi cái gì sang
-    headers = request.headers
-    print(f"Headers nhận từ Envoy: {dict(headers)}")
-    
-    # 2. Logic kiểm tra giả lập:
-    # Sau này chúng ta sẽ kiểm tra token ở đây
-    # Hiện tại: Chỉ cho phép nếu có header 'x-auth-test'
-    if headers.get("x-auth-test") == "secret":
-        return jsonify({"allowed": True}), 200
-    
-    return jsonify({"allowed": False}), 403
+    print("Đã nhận request từ Envoy!")
+    return Response("Authorized", status=200)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
