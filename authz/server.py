@@ -2,11 +2,11 @@ from flask import Flask, Response
 
 app = Flask(__name__)
 
-# Thêm route "/" để xử lý request mà Envoy đang gửi tới
 @app.route("/", methods=["GET", "POST"])
 @app.route("/check", methods=["GET", "POST"])
 def check():
-    print("Đã nhận request từ Envoy!")
+    print("Envoy đã gửi yêu cầu tới Authz-service!")
+    # Trả về 200 để Envoy cho phép truy cập tới Backend
     return Response("Authorized", status=200)
 
 if __name__ == "__main__":
