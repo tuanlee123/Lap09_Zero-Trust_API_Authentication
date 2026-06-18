@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  # 1. Backend giả lập (để test)
+  backend:
+    image: nginxdemos/hello
+    ports:
+      - "8081:80"
+
+  # 2. Envoy Proxy (Cổng vào)
+  envoy:
+    image: envoyproxy/envoy:v1.28-latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
